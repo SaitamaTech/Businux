@@ -11,7 +11,7 @@
 ![Status](https://img.shields.io/badge/status-Under%20Development-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)
 ![AI Powered](https://img.shields.io/badge/AI-Powered-purple?style=for-the-badge)
-![Built With Love](https://img.shields.io/badge/Made%20By-Saitama%20Tech-red?style=for-the-badge)
+![Built With Love](https://img.shields.io/badge/Made%20By-Saitama%20Tech%20team-red?style=for-the-badge)
 
 </p>
 
