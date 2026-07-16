@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  # Netlify's official Next.js runtime — handles App Router, middleware/proxy,
+  # image optimization, and server components automatically. Netlify should
+  # auto-detect and install this on connect, but it's declared explicitly
+  # here so `netlify build` works the same locally and in CI.
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NEXT_PUBLIC_USE_MOCK_API = "true"
+  # Override NEXT_PUBLIC_API_BASE_URL and NEXT_PUBLIC_USE_MOCK_API in the
+  # Netlify UI (Site settings → Environment variables) once the real backend
+  # is ready — don't hardcode production values in this file.
