@@ -1,88 +1,556 @@
-# Businux — Frontend
+<div align="center">
 
-Frontend implementation of the Businux AI Business Operating System, built to match the approved
-UI/UX designs and hardened for production deployment.
+# ⚡ AI Business Operating System
+### *The Operating System for Modern Businesses*
 
-**Status:** feature-complete against the approved designs, zero build/lint/type errors, backend
-integration layer scaffolded and ready. See `docs/PRODUCTION_CHECKLIST.md` for the full
-before/after of the production-hardening pass, including what's genuinely done vs. what still
-needs a manual follow-up (a few things — a real browser-based accessibility/responsive pass and
-automated tests — can't be verified from this build environment; that checklist says exactly
-which).
+<img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=24&duration=3000&pause=1000&color=00F5FF&center=true&vCenter=true&width=850&lines=One+AI.+Every+Business.;Chat+Instead+of+Click.;Automate+Everything.;Built+for+the+Future+of+Work." />
 
-## Documentation
+<p align="center">
 
-| Doc | Covers |
-|---|---|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Folder structure, component layering, rendering model, auth guard |
-| [`docs/API_INTEGRATION.md`](docs/API_INTEGRATION.md) | How to connect the real Express backend — expected endpoints, what changes vs. what doesn't |
-| [`docs/STATE_MANAGEMENT.md`](docs/STATE_MANAGEMENT.md) | When to use Zustand vs. React Query vs. Context vs. local state |
-| [`docs/ENVIRONMENT_SETUP.md`](docs/ENVIRONMENT_SETUP.md) | Local dev setup, env vars, scripts, common Windows issues |
-| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Vercel and Netlify deployment steps |
-| [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md) | WCAG 2.2 AA work done + manual verification checklist |
-| [`docs/PRODUCTION_CHECKLIST.md`](docs/PRODUCTION_CHECKLIST.md) | Full readiness checklist with what's verified vs. outstanding |
+![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-Under%20Development-success?style=for-the-badge)
+![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)
+![AI Powered](https://img.shields.io/badge/AI-Powered-purple?style=for-the-badge)
+![Built With Love](https://img.shields.io/badge/Made%20By-Saitama%20Tech%20team-red?style=for-the-badge)
 
-## Stack
+</p>
 
-| Concern | Choice |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS v3 (no CSS modules, no Bootstrap) |
-| Components | shadcn/ui pattern on Radix UI primitives (hand-authored in `src/components/ui`) |
-| Server state | TanStack Query (React Query) — `src/hooks/` |
-| Client state | Zustand — `src/store/` |
-| Cross-cutting state | React Context (auth session, theme) |
-| Forms | React Hook Form + Zod |
-| Charts | Recharts |
-| Animation | Framer Motion |
-| Icons | lucide-react |
+---
 
-## Getting started
+## 🚀 Imagine Running Your Entire Business Like This...
 
-```bash
-npm install
-cp .env.example .env.local     # Windows PowerShell: Copy-Item .env.example .env.local
-npm run dev                    # http://localhost:3000/welcome
+```text
+You:
+Create an invoice for Johnson.
+
+AI:
+✓ Invoice Created
+✓ PDF Generated
+✓ Payment Link Attached
+✓ Email Sent
+✓ Customer Notified
 ```
 
-Before opening a PR or deploying, run:
+No menus.
 
-```bash
-npm run verify   # typecheck + lint + build, in that order
+No searching through pages.
+
+No switching between dashboards.
+
+Just **talk to your business.**
+
+---
+
+# 🧠 What is AI Business Operating System?
+
+**AI Business Operating System (AI BOS)** is an intelligent platform that transforms natural language into real business operations.
+
+Instead of navigating dozens of pages, users simply ask the AI to perform tasks.
+
+The AI becomes your:
+
+- 🧠 Operations Manager
+- 📅 Scheduler
+- 💰 Accountant
+- 📊 Analyst
+- 👥 Customer Manager
+- 📄 Document Generator
+- 🤖 Business Assistant
+
+---
+
+# ⚡ Vision
+
+We believe business software shouldn't feel like software.
+
+It should feel like talking to the smartest employee you've ever hired.
+
+AI BOS removes complexity by replacing traditional dashboards with one intelligent conversational interface.
+
+One AI.
+
+Unlimited actions.
+
+Infinite possibilities.
+
+---
+
+# ✨ Features
+
+## 🤖 AI Command Center
+
+Everything begins with one chat.
+
+Example:
+
+```text
+Schedule a technician tomorrow at 9AM.
+
+Generate this month's revenue report.
+
+Show overdue invoices.
+
+Create a quotation for AC installation.
+
+Assign today's jobs.
+
+Who is our busiest employee?
 ```
 
-Full detail in [`docs/ENVIRONMENT_SETUP.md`](docs/ENVIRONMENT_SETUP.md).
+---
 
-> **Fonts note:** this build was developed in a sandbox without access to `fonts.googleapis.com`,
-> so `next/font/google` (Inter) is disabled and the app falls back to the system font stack in
-> `tailwind.config.ts`. On a machine with normal internet access, restore the Inter font load in
-> `src/app/layout.tsx` for pixel-exact typography — see the comment left in `tailwind.config.ts`.
+## 👥 Customer Management
 
-## Folder structure (short version — full detail in `docs/ARCHITECTURE.md`)
+- Create Customers
+- Customer History
+- Contact Management
+- Activity Timeline
+- Customer Notes
+- Outstanding Balances
+- Search Customers Instantly
 
+---
+
+## 🛠 Job Management
+
+- Create Jobs
+- Assign Staff
+- Live Job Tracking
+- Job Status Updates
+- Completion Reports
+- Attach Images
+- Digital Signatures
+
+---
+
+## 📅 Appointment Scheduling
+
+- AI Scheduling
+- Calendar Integration
+- Staff Availability
+- Automatic Conflict Detection
+- Rescheduling
+- Reminders
+
+---
+
+## 💼 Staff Management
+
+- Teams
+- Roles
+- Attendance
+- Performance
+- Workload Analysis
+- Daily Assignments
+
+---
+
+## 💵 Quotations
+
+Generate professional quotations instantly.
+
+AI automatically calculates:
+
+- Labor
+- Materials
+- Taxes
+- Discounts
+- Totals
+
+---
+
+## 🧾 Invoice Management
+
+- Generate Invoices
+- PDF Export
+- Email Delivery
+- Payment Tracking
+- Taxes
+- Due Dates
+
+---
+
+## 💳 Payments
+
+Track
+
+- Paid
+- Pending
+- Overdue
+- Partial Payments
+
+Generate payment reminders automatically.
+
+---
+
+## 📊 Reports
+
+Generate reports like:
+
+- Revenue
+- Profit
+- Expenses
+- Job Performance
+- Employee Performance
+- Monthly Growth
+- Customer Retention
+- Business Insights
+
+---
+
+## ✅ Task Management
+
+Create
+
+- Tasks
+- Reminders
+- Follow-ups
+- Team Assignments
+- Deadlines
+
+---
+
+# 💬 Example Conversations
+
+### Customer
+
+```text
+You:
+Find customers who haven't booked in 6 months.
+
+AI:
+Found 47 customers.
+
+Would you like me to send them a promotional offer?
 ```
-src/
-  app/          Next.js App Router routes only
-  components/   ui/ (design-system primitives), layout/, shared/, providers/
-  features/     One folder per product area (auth, crm, tasks, proposals, ...)
-  store/        Zustand — client/UI state
-  services/     mock-data.ts + api/ (typed backend service layer)
-  hooks/        React Query hooks wrapping services/api/
-  types/        index.ts (domain models) + api.ts (wire types)
-  lib/          utils.ts, format.ts, env.ts
-  proxy.ts      Route-protection guard (Next.js 16's renamed "middleware" convention)
+
+---
+
+### Invoice
+
+```text
+You:
+Create an invoice for Job #204.
+
+AI:
+✓ Invoice Created
+✓ PDF Generated
+✓ Payment Link Attached
 ```
 
-## What's implemented
+---
 
-Every approved screen has a working, responsive, accessible implementation: the full auth flow
-(login/signup/email verification/forgot+reset password/2FA), the 5-step business onboarding
-wizard, the AI CEO Dashboard, the AI Assistant chat interface, CRM (customer list + profile),
-the Kanban Task & Workflow Manager, Reports & Analytics, Settings & Subscription, and the
-5-step Proposal Generator.
+### Reports
 
-Everything currently reads from `src/services/mock-data.ts` via Zustand stores. A parallel,
-typed API service layer (`src/services/api/`) and React Query hooks (`src/hooks/`) are already
-built and ready to adopt screen-by-screen as the real Express backend comes online — see
-`docs/API_INTEGRATION.md` for the exact plan and endpoint contracts.
+```text
+You:
+Generate last month's report.
+
+AI:
+Revenue
+$48,210
+
+Expenses
+$17,350
+
+Profit
+$30,860
+
+Completed Jobs
+284
+
+Outstanding Payments
+$5,420
+```
+
+---
+
+### Staff
+
+```text
+You:
+Who's free tomorrow morning?
+
+AI:
+Sarah
+Mike
+James
+
+Would you like me to assign one of them?
+```
+
+---
+
+# 🏢 Industries
+
+AI BOS isn't built for one industry.
+
+It's built for **every business.**
+
+✅ Plumbing
+
+✅ Electrical
+
+✅ HVAC
+
+✅ Construction
+
+✅ Cleaning
+
+✅ Landscaping
+
+✅ Pest Control
+
+✅ Roofing
+
+✅ Painting
+
+✅ Property Management
+
+✅ Healthcare
+
+✅ Dental Clinics
+
+✅ Auto Repair
+
+✅ Logistics
+
+✅ Warehousing
+
+✅ Manufacturing
+
+✅ Retail
+
+✅ Restaurants
+
+✅ Hotels
+
+✅ Beauty Salons
+
+✅ Gyms
+
+✅ Law Firms
+
+✅ Accounting Firms
+
+✅ Insurance
+
+✅ Real Estate
+
+✅ Education
+
+…and many more.
+
+---
+
+# 🧩 Architecture
+
+```text
+                         User
+
+                          │
+
+                          ▼
+
+               AI Conversation Layer
+
+                          │
+
+               Natural Language Engine
+
+                          │
+
+                  AI Orchestrator
+
+                          │
+
+──────────────────────────────────────────────
+
+ Customer Service
+
+ Job Service
+
+ Appointment Service
+
+ Invoice Service
+
+ Payment Service
+
+ Staff Service
+
+ Reporting Service
+
+ Notification Service
+
+ Task Service
+
+ Analytics Service
+
+ Authentication Service
+
+──────────────────────────────────────────────
+
+                    Database
+```
+
+---
+
+# 🧠 AI Capabilities
+
+The AI understands intent rather than commands.
+
+```text
+"Generate invoice"
+
+↓
+
+Invoice Service
+
+↓
+
+Database
+
+↓
+
+PDF Generator
+
+↓
+
+Email Service
+
+↓
+
+Customer Notification
+
+↓
+
+Completed
+```
+
+---
+
+# ⚙️ Tech Stack
+
+### Frontend
+
+- React
+- Next.js
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+
+### Backend
+
+- Node.js
+- Express
+- PostgreSQL
+- Prisma
+- Redis
+
+### AI
+
+- OpenAI API
+- Function Calling
+- AI Agents
+- Tool Orchestration
+- Embeddings
+- RAG
+- Memory
+
+### Infrastructure
+
+- Docker
+- GitHub Actions
+- Vercel
+- Railway
+- AWS
+- Cloudflare
+
+---
+
+# 🔥 Roadmap
+
+- [x] AI Chat Interface
+- [x] Authentication
+- [x] Customer Module
+- [x] Jobs Module
+- [x] Appointment Module
+- [x] Quotations
+- [x] Invoice Generator
+- [ ] Voice Assistant
+- [ ] WhatsApp Integration
+- [ ] SMS Automation
+- [ ] AI Phone Agent
+- [ ] Mobile Apps
+- [ ] AI Workflow Builder
+- [ ] Multi-Tenant SaaS
+- [ ] Marketplace
+- [ ] Plugin Ecosystem
+- [ ] Autonomous AI Agents
+
+---
+
+# 🌍 Long-Term Vision
+
+We're not building another CRM.
+
+We're not building another ERP.
+
+We're not building another management dashboard.
+
+We're building a platform where **AI becomes the operating system of every business.**
+
+A future where businesses don't navigate software...
+
+They simply have conversations.
+
+---
+
+# 📈 Future Possibilities
+
+- AI Receptionist
+- AI Sales Agent
+- AI Call Center
+- AI Voice Booking
+- AI Finance Manager
+- AI HR Assistant
+- AI Marketing Agent
+- AI Customer Support
+- AI Operations Manager
+- AI Executive Assistant
+
+One platform.
+
+One intelligence.
+
+Unlimited business automation.
+
+---
+
+# 🤝 Contributing
+
+We welcome developers, designers, AI engineers, product thinkers, and innovators who share our vision of redefining how businesses operate.
+
+Fork the repository, open an issue, submit a pull request, or start a discussion.
+
+Let's build the future together.
+
+---
+
+# 📜 License
+
+Licensed under the **MIT License**.
+
+---
+
+<div align="center">
+
+# ⭐ If you believe software should work *for* people instead of making people work for software...
+
+### Give this project a ⭐
+
+### Built with ❤️ by **Saitama Tech**
+
+*"The Future Doesn't Click. It Talks."*
+
+</div>
