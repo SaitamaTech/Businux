@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { getPersistedCustomers, getPersistedProjects, hasDismissedTutorial } from "@/services/mock-store";
+import { getPersistedCustomers, getPersistedProjects, hasDismissedTutorial, setDismissedTutorial } from "@/services/mock-store";
 
 const financeHighlights = [
   { label: "Cash balance", value: "₦14.8M", icon: Wallet, variant: "success", change: "+12%" },
