@@ -87,7 +87,7 @@ export function MobileNav() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.25 }}
-              className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-sidebar shadow-popover lg:hidden"
+              className="fixed inset-y-0 left-0 z-[999] flex w-72 flex-col bg-sidebar shadow-popover lg:hidden"
             >
               <div className="flex h-16 items-center justify-between border-b border-border px-5">
                 <Logo size="sm" />
