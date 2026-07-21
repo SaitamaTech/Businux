@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getDocumentsByOrg } from '../db.js';
 
 const router = express.Router();
-const GROK_API_KEY = process.env.GROK_API_KEY || process.env.OPENAI_API_KEY;
+const GROK_API_KEY = process.env.GROK_API_KEY;
 
 /**
  * POST /api/ai-assistant/messages

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { SendChatMessageRequest, SendChatMessageResponse } from "@/types/api";
 
-const GROK_API_KEY = process.env.GROK_API_KEY || process.env.OPENAI_API_KEY;
+const GROK_API_KEY = process.env.GROK_API_KEY;
 
 export async function POST(request: Request) {
   if (!GROK_API_KEY) {
