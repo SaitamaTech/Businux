@@ -1,5 +1,6 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { getDocumentsByOrg } from '../db.js';
 
 const router = express.Router();
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -9,7 +10,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
  * Send a message to the AI assistant and get a response
  */
 router.post('/messages', async (req, res) => {
-  const { content } = req.body;
+  const { content, org_id } = req.body;
 
   if (!content) {
     return res.status(400).json({ error: { message: 'Message content required' } });
@@ -20,6 +21,16 @@ router.post('/messages', async (req, res) => {
   }
 
   try {
+    // Fetch top org documents to provide context
+    let docsSummary = '';
+    if (org_id) {
+      const docs = getDocumentsByOrg(org_id) || [];
+      const top = docs.slice(0, 5).map(d => `- ${d.title}: ${d.content.slice(0, 300)}`).join('\n');
+      if (top) docsSummary = `Organization documents:\n${top}\n\n`;
+    }
+
+    const systemPrompt = `You are the Businux AI assistant. Answer business questions clearly, provide concise insights, and help users with strategy, reporting, and CRM guidance. Use available organization documents when relevant.\n\n${docsSummary}`;
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -29,10 +40,7 @@ router.post('/messages', async (req, res) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          {
-            role: 'system',
-            content: 'You are the Businux AI assistant. Answer business questions clearly, provide concise insights, and help users with strategy, reporting, and CRM guidance.',
-          },
+          { role: 'system', content: systemPrompt },
           { role: 'user', content },
         ],
         temperature: 0.8,

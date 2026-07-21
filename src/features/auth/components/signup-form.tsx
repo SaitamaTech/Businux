@@ -45,7 +45,7 @@ export function SignupForm() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { fullName: "", email: "", password: "", confirmPassword: "", terms: false },
+    defaultValues: { fullName: "", email: "", password: "", confirmPassword: "", terms: false, demo: true, template: 'software' },
   });
 
   // useWatch (not the `watch()` method) keeps this component compatible with
@@ -57,15 +57,16 @@ export function SignupForm() {
 
   const onSubmit = async (values: FormValues) => {
     try {
+      const payload: any = { fullName: values.fullName, email: values.email, password: values.password, seed_demo: values.demo, template: values.template };
       if (env.useFirebase) {
         try {
           await firebaseSignup(values.email, values.password, values.fullName);
         } catch (firebaseError) {
           console.warn("Firebase signup failed, falling back to mock signup", firebaseError);
-          await authApi.signup({ fullName: values.fullName, email: values.email, password: values.password });
+          await authApi.signup(payload);
         }
       } else {
-        await authApi.signup({ fullName: values.fullName, email: values.email, password: values.password });
+        await authApi.signup(payload);
       }
       toast.success({ title: "Account created", description: "Your account is ready. You can continue to the dashboard." });
       router.push("/dashboard");
@@ -215,6 +216,22 @@ export function SignupForm() {
             {errors.terms.message}
           </p>
         )}
+
+        <div className="flex items-center gap-2">
+          <Checkbox id="demo" className="mt-0.5" defaultChecked {...register('demo')} />
+          <Label htmlFor="demo" className="font-normal leading-snug text-muted-foreground">
+            Start with demo data (recommended)
+          </Label>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="template">Industry template</Label>
+          <select id="template" className="w-full rounded-lg border px-3 py-2" {...register('template')}>
+            <option value="software">Software</option>
+            <option value="retail">Retail</option>
+            <option value="consulting">Consulting</option>
+          </select>
+        </div>
 
         <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Creating account..." : "Create Account"}

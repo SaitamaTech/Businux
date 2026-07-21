@@ -31,12 +31,14 @@ import authRoutes from './routes/auth.js';
 import crmRoutes from './routes/crm.js';
 import tasksRoutes from './routes/tasks.js';
 import aiAssistantRoutes from './routes/ai-assistant.js';
+import documentsRoutes from './routes/documents.js';
 
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/crm', crmRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/ai-assistant', aiAssistantRoutes);
+app.use('/api/documents', documentsRoutes);
 
 // 404 handler
 app.use((req, res) => {

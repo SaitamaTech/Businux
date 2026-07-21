@@ -1,10 +1,9 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { createUser, getUserByEmail, createOrganization } from '../db.js';
+import { seedTemplate } from '../services/templates.js';
 
 const router = express.Router();
-
-// Mock user storage (replace with a real database)
-const users = new Map();
 
 /**
  * POST /api/auth/login
@@ -21,34 +20,33 @@ router.post('/login', (req, res) => {
     return res.status(400).json({ error: { message: 'Password must be at least 6 characters' } });
   }
 
-  // Mock authentication — in production, hash & verify password against a DB
-  const user = users.get(email) || {
-    id: `user-${uuidv4()}`,
-    email,
-    name: email.split('@')[0].replace(/[0-9]/g, '').split(/[._-]/).map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') || 'User',
-    role: 'CEO',
-    companyName: 'Your Company',
-  };
+  const existing = getUserByEmail(email);
+  if (!existing) {
+    return res.status(401).json({ error: { message: 'Invalid credentials' } });
+  }
 
-  users.set(email, user);
+  // NOTE: password is stored in plaintext in this demo. Replace with hashing in prod.
+  if (existing.password_hash !== password) {
+    return res.status(401).json({ error: { message: 'Invalid credentials' } });
+  }
 
   res.json({
     user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      companyName: user.companyName,
+      id: existing.id,
+      email: existing.email,
+      name: existing.name,
+      role: existing.role,
+      org_id: existing.org_id,
     },
   });
 });
 
 /**
  * POST /api/auth/signup
- * Sign up a new user
+ * Sign up a new user and create an organization
  */
 router.post('/signup', (req, res) => {
-  const { email, password, fullName } = req.body;
+  const { email, password, fullName, seed_demo, template, industry } = req.body;
 
   if (!email || !password || !fullName) {
     return res.status(400).json({ error: { message: 'Email, password, and full name required' } });
@@ -58,34 +56,39 @@ router.post('/signup', (req, res) => {
     return res.status(400).json({ error: { message: 'Password must be at least 6 characters' } });
   }
 
-  if (users.has(email)) {
-    return res.status(409).json({ error: { message: 'User already exists' } });
-  }
+  const existing = getUserByEmail(email);
+  if (existing) return res.status(409).json({ error: { message: 'User already exists' } });
 
-  const user = {
-    id: `user-${uuidv4()}`,
-    email,
-    name: fullName,
-    role: 'CEO',
-    companyName: 'Your Company',
+  const orgId = `org-${uuidv4()}`;
+  const now = new Date().toISOString();
+  const org = {
+    id: orgId,
+    name: `${fullName.split(' ')[0]}'s Company`,
+    industry: industry || 'software',
+    size: '1-10',
+    country: '',
+    timezone: '',
+    currency: 'USD',
+    phone: '',
+    website: '',
+    created_at: now,
   };
 
-  users.set(email, user);
+  createOrganization(org);
 
-  res.status(201).json({
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      companyName: user.companyName,
-    },
-  });
+  const id = `user-${uuidv4()}`;
+  const user = { id, email, name: fullName, password_hash: password, role: 'owner', org_id: orgId, created_at: now };
+  createUser(user);
+
+  if (seed_demo) {
+    seedTemplate(orgId, template || 'software');
+  }
+
+  res.status(201).json({ user, org });
 });
 
 /**
  * POST /api/auth/logout
- * Logout (clear session)
  */
 router.post('/logout', (req, res) => {
   res.json({ success: true });
@@ -93,10 +96,8 @@ router.post('/logout', (req, res) => {
 
 /**
  * GET /api/auth/me
- * Get current user
  */
 router.get('/me', (req, res) => {
-  // In production, extract user from JWT or session
   res.status(401).json({ error: { message: 'Not authenticated' } });
 });
 
