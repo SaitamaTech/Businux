@@ -20,7 +20,7 @@ function getCurrentUserId() {
   try {
     const raw = window.localStorage.getItem("businux-auth");
     if (!raw) return "guest";
-    const parsed = JSON.parse(raw) as { state?: { user?: { id?: string } } } | { user?: { id?: string } };
+    const parsed = JSON.parse(raw) as any;
     return parsed?.state?.user?.id ?? parsed?.user?.id ?? "guest";
   } catch {
     return "guest";
