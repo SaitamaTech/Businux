@@ -22,11 +22,13 @@ function nameFromEmail(email: string) {
 export function createMockUser(email?: string) {
   const normalizedEmail = email?.trim().toLowerCase();
   const id = normalizedEmail ? `mock-${normalizedEmail.replace(/[^a-z0-9]/g, "-")}` : crypto.randomUUID();
+  const orgId = `org-${id}`;
   return {
     ...mockUser,
     id,
     email: normalizedEmail ?? mockUser.email,
     name: normalizedEmail ? nameFromEmail(normalizedEmail) : mockUser.name,
+    orgId,
   };
 }
 

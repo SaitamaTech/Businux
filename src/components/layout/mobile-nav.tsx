@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -67,62 +68,67 @@ export function MobileNav() {
         <Menu className="h-5 w-5" aria-hidden="true" />
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/40 lg:hidden"
-              onClick={() => setOpen(false)}
-              aria-hidden="true"
-            />
-            <motion.aside
-              ref={panelRef}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Main navigation"
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "tween", duration: 0.25 }}
-              className="fixed inset-y-0 left-0 z-[999] flex w-72 flex-col bg-sidebar shadow-popover lg:hidden"
-            >
-              <div className="flex h-16 items-center justify-between border-b border-border px-5">
-                <Logo size="sm" />
-                <button
-                  onClick={() => setOpen(false)}
-                  aria-label="Close navigation menu"
-                  className="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <X className="h-5 w-5" aria-hidden="true" />
-                </button>
-              </div>
-              <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4" aria-label="Primary">
-                {sidebarNav.map((item) => {
-                  const active = pathname === item.href || pathname.startsWith(item.href + "/");
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        active && "bg-sidebar-active text-sidebar-active-foreground"
-                      )}
-                    >
-                      <item.icon className="h-[18px] w-[18px]" aria-hidden="true" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+      {typeof document !== "undefined"
+        ? createPortal(
+            <AnimatePresence>
+              {open && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[1000] h-screen w-screen bg-black/45 lg:hidden"
+                    onClick={() => setOpen(false)}
+                    aria-hidden="true"
+                  />
+                  <motion.aside
+                    ref={panelRef}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Main navigation"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "-100%" }}
+                    transition={{ type: "tween", duration: 0.25 }}
+                    className="fixed inset-y-0 left-0 z-[1001] flex w-72 flex-col bg-sidebar shadow-popover lg:hidden"
+                  >
+                    <div className="flex h-16 items-center justify-between border-b border-border px-5">
+                      <Logo size="sm" />
+                      <button
+                        onClick={() => setOpen(false)}
+                        aria-label="Close navigation menu"
+                        className="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <X className="h-5 w-5" aria-hidden="true" />
+                      </button>
+                    </div>
+                    <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4" aria-label="Primary">
+                      {sidebarNav.map((item) => {
+                        const active = pathname === item.href || pathname.startsWith(item.href + "/");
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setOpen(false)}
+                            aria-current={active ? "page" : undefined}
+                            className={cn(
+                              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                              active && "bg-sidebar-active text-sidebar-active-foreground"
+                            )}
+                          >
+                            <item.icon className="h-[18px] w-[18px]" aria-hidden="true" />
+                            {item.label}
+                          </Link>
+                        );
+                      })}
+                    </nav>
+                  </motion.aside>
+                </>
+              )}
+            </AnimatePresence>,
+            document.body
+          )
+        : null}
     </>
   );
 }

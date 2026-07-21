@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SocialLoginRow } from "./social-login-row";
 import { useAuthStore } from "@/store/auth-store";
+import { supabaseSignInWithGoogle } from "@/lib/supabase";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -44,6 +45,18 @@ export function LoginForm() {
       router.push("/dashboard");
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setFormError(null);
+    setSubmitting(true);
+
+    try {
+      await supabaseSignInWithGoogle();
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Google sign-in failed. Please try again.");
       setSubmitting(false);
     }
   };
@@ -137,7 +150,7 @@ export function LoginForm() {
         </Button>
       </form>
 
-      <SocialLoginRow label="Or continue with" />
+      <SocialLoginRow label="Or continue with" onGoogleSignIn={handleGoogleSignIn} />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}

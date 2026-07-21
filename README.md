@@ -449,7 +449,7 @@ Completed
 
 ### AI
 
-- OpenAI API
+- Grok API
 - Function Calling
 - AI Agents
 - Tool Orchestration

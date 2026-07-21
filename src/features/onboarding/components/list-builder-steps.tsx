@@ -39,13 +39,14 @@ function ListBuilderStep({
       <CardContent className="space-y-4 pt-0">
         <div className="flex gap-2">
           <Input
+            data-tour={`input-${title.toLowerCase().replace(/\s+/g, '-')}`}
             aria-label={title}
             placeholder={placeholder}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
           />
-          <Button type="button" onClick={add}>
+          <Button data-tour={`add-${title.toLowerCase().replace(/\s+/g, '-')}`} type="button" onClick={add}>
             <Plus className="h-4 w-4" /> Add
           </Button>
         </div>
@@ -54,6 +55,7 @@ function ListBuilderStep({
             <Badge key={`${item}-${i}`} variant="secondary" className="gap-1.5 py-1.5 pl-3 pr-2 text-sm">
               {item}
               <button
+                data-tour="remove-item"
                 onClick={() => setItems((prev) => prev.filter((_, idx) => idx !== i))}
                 aria-label={`Remove ${item}`}
                 className="rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

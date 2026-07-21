@@ -46,6 +46,9 @@ export interface SignupRequest {
   fullName: string;
   email: string;
   password: string;
+  // Optional flags for demo seeding
+  seed_demo?: boolean;
+  template?: string;
 }
 
 export interface AuthUserResponse {
@@ -92,6 +95,7 @@ export interface UpdateTaskStatusRequest {
 export interface SendChatMessageRequest {
   content: string;
   conversationId?: string;
+  org_id?: string;
 }
 
 export interface SendChatMessageResponse {

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { aiAssistantApi } from "@/services/api/ai-assistant";
+import { useAuthStore } from "@/store/auth-store";
 
 export interface ChatMessage {
   id: string;
@@ -52,7 +53,9 @@ export const useAIAssistantStore = create<AIAssistantState>()((set) => ({
     set((s) => ({ messages: [...s.messages, userMsg], isThinking: true }));
 
     try {
-      const reply = await aiAssistantApi.sendMessage({ content });
+      const auth = useAuthStore.getState();
+      const orgId = auth.user?.orgId ?? undefined;
+      const reply = await aiAssistantApi.sendMessage({ content, org_id: orgId });
       set((s) => ({
         messages: [
           ...s.messages,

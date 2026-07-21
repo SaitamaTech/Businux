@@ -8,7 +8,7 @@ Express.js backend for the Businux dashboard application.
 - ✅ Auth endpoints (login, signup, logout)
 - ✅ CRM endpoints (customers CRUD)
 - ✅ Tasks endpoints
-- ✅ AI Assistant endpoint (OpenAI integration)
+- ✅ AI Assistant endpoint (Grok integration)
 - ✅ Ready for Render deployment
 
 ## Setup
@@ -25,7 +25,7 @@ npm install
 PORT=4000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
-OPENAI_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
 ```
 
 3. **Start the server**
@@ -76,7 +76,7 @@ git push origin main
      - `PORT` = `4000`
      - `NODE_ENV` = `production`
      - `FRONTEND_URL` = `https://your-vercel-site.vercel.app`
-     - `OPENAI_API_KEY` = `your_secret_key`
+     - `GROK_API_KEY` = `your_secret_key`
    - Deploy
 
 3. **Update Frontend on Vercel**

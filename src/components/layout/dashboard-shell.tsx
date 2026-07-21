@@ -12,11 +12,11 @@ export function DashboardShell({
   subtitle?: string;
 }) {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="relative flex min-h-screen overflow-x-hidden bg-background">
       <DashboardSidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="relative flex min-w-0 flex-1 flex-col">
         <DashboardTopbar title={title} subtitle={subtitle} />
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
+        <main className="relative z-0 flex-1 p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );

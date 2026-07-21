@@ -16,6 +16,7 @@ import { authApi } from "@/services/api/auth";
 import { useToast } from "@/components/providers/toast-provider";
 import { env } from "@/lib/env";
 import { firebaseSignup } from "@/lib/firebase";
+import { supabaseSignupWithEmail, supabaseSignInWithGoogle } from "@/lib/supabase";
 
 const schema = z
   .object({
@@ -24,6 +25,8 @@ const schema = z
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
     terms: z.boolean().refine((v) => v, { message: "You must agree to continue" }),
+    demo: z.boolean().optional(),
+    template: z.string().optional(),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match",
@@ -45,7 +48,7 @@ export function SignupForm() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { fullName: "", email: "", password: "", confirmPassword: "", terms: false },
+    defaultValues: { fullName: "", email: "", password: "", confirmPassword: "", terms: false, demo: true, template: 'software' },
   });
 
   // useWatch (not the `watch()` method) keeps this component compatible with
@@ -57,21 +60,44 @@ export function SignupForm() {
 
   const onSubmit = async (values: FormValues) => {
     try {
+      const payload: any = { fullName: values.fullName, email: values.email, password: values.password, seed_demo: values.demo, template: values.template };
+
+      if (env.useSupabase) {
+        try {
+          await supabaseSignupWithEmail(values.email, values.password, values.fullName);
+          toast.success({ title: "Account created", description: "Your account is ready. You can continue to the dashboard." });
+          router.push("/dashboard");
+          return;
+        } catch (supabaseError) {
+          console.warn("Supabase signup failed, falling back to backend signup", supabaseError);
+        }
+      }
+
       if (env.useFirebase) {
         try {
           await firebaseSignup(values.email, values.password, values.fullName);
         } catch (firebaseError) {
           console.warn("Firebase signup failed, falling back to mock signup", firebaseError);
-          await authApi.signup({ fullName: values.fullName, email: values.email, password: values.password });
+          await authApi.signup(payload);
         }
       } else {
-        await authApi.signup({ fullName: values.fullName, email: values.email, password: values.password });
+        await authApi.signup(payload);
       }
+
       toast.success({ title: "Account created", description: "Your account is ready. You can continue to the dashboard." });
       router.push("/dashboard");
     } catch (err: any) {
       const message = err?.message ?? "Signup failed";
       toast.error({ title: "Signup error", description: message });
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await supabaseSignInWithGoogle();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Google sign-in failed. Please try again.";
+      toast.error({ title: "Google sign-in failed", description: message });
     }
   };
 
@@ -216,13 +242,29 @@ export function SignupForm() {
           </p>
         )}
 
+        <div className="flex items-center gap-2">
+          <Checkbox id="demo" className="mt-0.5" defaultChecked {...register('demo')} />
+          <Label htmlFor="demo" className="font-normal leading-snug text-muted-foreground">
+            Start with demo data (recommended)
+          </Label>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="template">Industry template</Label>
+          <select id="template" className="w-full rounded-lg border px-3 py-2" {...register('template')}>
+            <option value="software">Software</option>
+            <option value="retail">Retail</option>
+            <option value="consulting">Consulting</option>
+          </select>
+        </div>
+
         <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Creating account..." : "Create Account"}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Button>
       </form>
 
-      <SocialLoginRow label="Or sign up with" />
+      <SocialLoginRow label="Or sign up with" onGoogleSignIn={handleGoogleSignIn} />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{" "}

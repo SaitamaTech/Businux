@@ -4,6 +4,12 @@ import type { User } from "@/types";
 import { createMockUser, mockUser } from "@/services/mock-data";
 import { env } from "@/lib/env";
 import { firebaseLogin, firebaseLogout, firebaseOnAuthStateChanged, firebaseUpdateProfile } from "@/lib/firebase";
+import {
+  supabaseLoginWithEmail,
+  supabaseSignOut,
+  supabaseSignupWithEmail,
+  supabaseOnAuthStateChanged,
+} from "@/lib/supabase";
 
 const SESSION_COOKIE = "businux_session";
 
@@ -54,6 +60,18 @@ export const useAuthStore = create<AuthState>()(
           throw new Error("Invalid email or password.");
         }
 
+        if (env.useSupabase) {
+          try {
+            const user = await supabaseLoginWithEmail(email, password);
+            if (!user) throw new Error("Unable to sign in with Supabase.");
+            set({ user, isAuthenticated: true });
+            setSessionCookie(true);
+            return;
+          } catch (supabaseError) {
+            console.warn("Supabase login failed, falling back to mock login", supabaseError);
+          }
+        }
+
         if (env.useFirebase) {
           try {
             const user = await firebaseLogin(email, password);
@@ -72,6 +90,14 @@ export const useAuthStore = create<AuthState>()(
         setSessionCookie(true);
       },
       logout: async () => {
+        if (env.useSupabase) {
+          try {
+            await supabaseSignOut();
+          } catch {
+            // Ignore Supabase sign-out errors and fall back to local state reset.
+          }
+        }
+
         if (env.useFirebase) {
           try {
             await firebaseLogout();
@@ -79,6 +105,7 @@ export const useAuthStore = create<AuthState>()(
             // Ignore Firebase sign-out errors and fall back to local state reset.
           }
         }
+
         set({ user: null, isAuthenticated: false });
         setSessionCookie(false);
       },
@@ -129,9 +156,18 @@ export const useAuthStore = create<AuthState>()(
   )
 );
 
-if (typeof window !== "undefined" && env.useFirebase) {
-  firebaseOnAuthStateChanged((user) => {
-    useAuthStore.setState({ user, isAuthenticated: !!user });
-    setSessionCookie(!!user);
-  });
+if (typeof window !== "undefined") {
+  if (env.useSupabase) {
+    supabaseOnAuthStateChanged((user) => {
+      useAuthStore.setState({ user, isAuthenticated: !!user });
+      setSessionCookie(!!user);
+    });
+  }
+
+  if (env.useFirebase) {
+    firebaseOnAuthStateChanged((user) => {
+      useAuthStore.setState({ user, isAuthenticated: !!user });
+      setSessionCookie(!!user);
+    });
+  }
 }
