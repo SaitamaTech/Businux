@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { SendChatMessageRequest, SendChatMessageResponse } from "@/types/api";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.XAI_API_KEY || process.env.GROK_API_KEY;
-const GEMINI_MODEL = "gemini-1.5-mini";
-const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
-export async function POST(request: Request ) {
+export async function POST(request: Request) {
   if (!GEMINI_API_KEY) {
     return NextResponse.json({ error: "Gemini API key is not configured." }, { status: 500 });
   }
@@ -16,44 +16,44 @@ export async function POST(request: Request ) {
   }
 
   try {
-    const isApiKey = GEMINI_API_KEY.startsWith("AIza");
-    const requestUrl = `${GEMINI_BASE_URL}/models/${GEMINI_MODEL}:generate${isApiKey ? `?key=${encodeURIComponent(GEMINI_API_KEY)}` : ""}`;
-    const requestHeaders: Record<string, string> = {
-      "Content-Type": "application/json",
-      ...(isApiKey ? {} : { Authorization: `Bearer ${GEMINI_API_KEY}` }),
-    };
-
-    const response = await fetch(requestUrl, {
+    const response = await fetch(GEMINI_URL, {
       method: "POST",
-      headers: requestHeaders,
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_API_KEY,
+      },
       body: JSON.stringify({
-        prompt: {
-          text: payload.content,
+        systemInstruction: {
+          parts: [
+            {
+              text: "You are the Businux AI assistant. Answer business questions clearly, provide concise insights, and help users with strategy, reporting, and CRM guidance.",
+            },
+          ],
         },
-        temperature: 0.8,
-        maxOutputTokens: 600,
-        candidateCount: 1,
+        contents: [{ role: "user", parts: [{ text: payload.content }] }],
+        generationConfig: { temperature: 0.8, maxOutputTokens: 600 },
       }),
     });
 
     const result = await response.json();
+
     if (!response.ok) {
       const errorMessage = result?.error?.message ?? "Gemini request failed.";
       return NextResponse.json({ error: errorMessage }, { status: response.status });
     }
 
-    const assistantMessage = result?.candidates?.[0]?.output ?? "The AI did not return a response.";
+    const assistantMessage = result?.candidates?.[0]?.content?.parts?.map((p: { text: string }) => p.text).join("");
+
     const aiResponse: SendChatMessageResponse = {
       id: crypto.randomUUID(),
       role: "assistant",
-      content: assistantMessage,
+      content: assistantMessage || "The AI did not return a response.",
       timestamp: new Date().toISOString(),
     };
-
     return NextResponse.json(aiResponse);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unexpected Gemini error." },
+      { error: error instanceof Error ? error.message : "Unexpected error calling Gemini." },
       { status: 500 }
     );
   }
