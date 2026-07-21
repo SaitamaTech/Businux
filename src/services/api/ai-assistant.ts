@@ -21,6 +21,6 @@ export const aiAssistantApi = {
     // Real backend should stream via Server-Sent Events or a ReadableStream
     // response for a typing effect — this call is the non-streaming fallback.
     // See docs/API_INTEGRATION.md → "AI Assistant streaming" for the plan.
-    return apiClient<SendChatMessageResponse>("/api/ai-assistant/messages", { method: "POST", body: payload });
+    return apiClient<SendChatMessageResponse>("/ai-assistant/messages", { method: "POST", body: payload });
   },
 };
