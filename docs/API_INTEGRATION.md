@@ -119,7 +119,7 @@ rather than just checking presence. Full detail is in the comment block at the t
 
 **AI Assistant streaming:** the chat UI (`src/features/ai-assistant/`) currently shows a
 "Thinking..." indicator and then the full reply at once. If your backend streams tokens (e.g.
-via Server-Sent Events, matching how the OpenAI API streams), `aiAssistantApi.sendMessage()` in
+via Server-Sent Events, matching how the Grok API streams), `aiAssistantApi.sendMessage()` in
 `src/services/api/ai-assistant.ts` is the one function to change — swap the single `fetch`/`await`
 for a `ReadableStream` reader that appends chunks to the message as they arrive. The chat bubble
 component doesn't need to change either way; it just renders whatever string is in the message.

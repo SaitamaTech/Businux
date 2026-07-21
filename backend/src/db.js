@@ -43,6 +43,14 @@ CREATE TABLE IF NOT EXISTS documents (
   created_at TEXT NOT NULL,
   FOREIGN KEY(org_id) REFERENCES organizations(id)
 );
+
+CREATE TABLE IF NOT EXISTS sessions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id)
+);
 `);
 
 export function createOrganization(org) {
@@ -69,6 +77,31 @@ export function addDocument(doc) {
   const stmt = db.prepare(`INSERT INTO documents (id, org_id, title, content, source, created_at) VALUES (@id,@org_id,@title,@content,@source,@created_at)`);
   stmt.run(doc);
   return doc;
+}
+
+export function createSession(session) {
+  const stmt = db.prepare(`INSERT INTO sessions (id, user_id, created_at, expires_at) VALUES (@id,@user_id,@created_at,@expires_at)`);
+  stmt.run(session);
+  return session;
+}
+
+export function getSessionById(id) {
+  return db.prepare('SELECT * FROM sessions WHERE id = ?').get(id);
+}
+
+export function deleteSession(id) {
+  const stmt = db.prepare('DELETE FROM sessions WHERE id = ?');
+  stmt.run(id);
+}
+
+export function getUserBySessionId(sessionId) {
+  return db.prepare(`
+    SELECT users.*, organizations.name AS companyName, organizations.id AS orgId
+    FROM sessions
+    JOIN users ON users.id = sessions.user_id
+    LEFT JOIN organizations ON users.org_id = organizations.id
+    WHERE sessions.id = ? AND sessions.expires_at > ?
+  `).get(sessionId, new Date().toISOString());
 }
 
 export function getDocumentsByOrg(orgId) {

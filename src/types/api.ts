@@ -95,6 +95,7 @@ export interface UpdateTaskStatusRequest {
 export interface SendChatMessageRequest {
   content: string;
   conversationId?: string;
+  org_id?: string;
 }
 
 export interface SendChatMessageResponse {

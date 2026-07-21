@@ -13,8 +13,8 @@ function readBool(value: string | undefined, fallback: boolean): boolean {
 }
 
 export const env = {
-  /** Base URL of the Express API. Empty string is valid while mock mode is on. */
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? "",
+  /** Base URL of the API. Uses local Next.js API routes by default when not configured. */
+  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api",
 
   /**
    * When true (the default until the backend is ready), every function in

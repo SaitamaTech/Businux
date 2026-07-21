@@ -5,6 +5,7 @@ export interface User {
   role: "Administrator" | "CEO" | "Manager" | "Staff";
   avatarUrl?: string;
   companyName: string;
+  orgId?: string;
 }
 
 export interface NavItem {

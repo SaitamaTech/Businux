@@ -18,7 +18,7 @@ export default function TeamPage() {
     <DashboardShell title="Team" subtitle="Manage your people, capacity, and performance.">
       <div className="space-y-6">
         <Card className="overflow-hidden">
-          <div className="bg-gradient-to-r from-secondary/80 via-secondary to-secondary/60 p-6 text-white">
+          <div className="brand-gradient p-6 text-white">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/80">People operations</p>
