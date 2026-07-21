@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SocialLoginRow } from "./social-login-row";
 import { useAuthStore } from "@/store/auth-store";
+import { supabaseSignInWithGoogle } from "@/lib/supabase";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
