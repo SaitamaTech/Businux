@@ -32,18 +32,27 @@ router.post('/messages', async (req, res) => {
     const systemPrompt = `You are the Businux AI assistant. Answer business questions clearly, provide concise insights, and help users with strategy, reporting, and CRM guidance. Use available organization documents when relevant.\n\n${docsSummary}`;
     const prompt = `${systemPrompt}\nHuman: ${content}\nAssistant:`;
 
-    const response = await fetch('https://api.anthropic.com/v1/complete', {
+        const response = await fetch('https://api.x.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': GROK_API_KEY,
+        'Authorization': `Bearer ${GROK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'grok-1',
-        prompt,
-        max_tokens_to_sample: 600,
+        model: 'grok-3-mini-latest',
+        messages: [
+          {
+            role: 'system',
+            content: systemPrompt,
+          },
+          {
+            role: 'user',
+            content,
+          },
+        ],
+        max_tokens: 600,
         temperature: 0.8,
-      }),
+      } ),
     });
 
     const result = await response.json();
@@ -53,8 +62,7 @@ router.post('/messages', async (req, res) => {
       return res.status(response.status).json({ error: { message: errorMessage } });
     }
 
-    const assistantMessage = result.completion || result?.choices?.[0]?.text || result?.output || 'The AI did not return a response.';
-
+const assistantMessage = result.choices?.[0]?.message?.content || 'The AI did not return a response.';
     res.json({
       id: uuidv4(),
       role: 'assistant',

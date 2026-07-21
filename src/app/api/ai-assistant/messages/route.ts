@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import type { SendChatMessageRequest, SendChatMessageResponse } from "@/types/api";
 
 const GROK_API_KEY = process.env.GROK_API_KEY;
+const XAI_BASE_URL = "https://api.x.ai/v1";
 
-export async function POST(request: Request) {
+export async function POST(request: Request ) {
   if (!GROK_API_KEY) {
     return NextResponse.json({ error: "Grok API key is not configured." }, { status: 500 });
   }
@@ -14,18 +15,26 @@ export async function POST(request: Request) {
   }
 
   try {
-    const prompt = `You are the Businux AI assistant. Answer business questions clearly, provide concise insights, and help users with strategy, reporting, and CRM guidance.\n\nHuman: ${payload.content}\nAssistant:`;
-
-    const response = await fetch("https://api.anthropic.com/v1/complete", {
+    const response = await fetch(`${XAI_BASE_URL}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": GROK_API_KEY,
+        "Authorization": `Bearer ${GROK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "grok-1",
-        prompt,
-        max_tokens_to_sample: 600,
+        model: "grok-3-mini-latest",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are the Businux AI assistant. Answer business questions clearly, provide concise insights, and help users with strategy, reporting, and CRM guidance.",
+          },
+          {
+            role: "user",
+            content: payload.content,
+          },
+        ],
+        max_tokens: 600,
         temperature: 0.8,
       }),
     });
@@ -36,11 +45,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: errorMessage }, { status: response.status });
     }
 
-    const assistantMessage = result.completion || result?.choices?.[0]?.text || result?.output || "The AI did not return a response.";
+    const assistantMessage = result.choices?.[0]?.message?.content ?? "The AI did not return a response.";
     const aiResponse: SendChatMessageResponse = {
       id: crypto.randomUUID(),
       role: "assistant",
-      content: assistantMessage ?? "The AI did not return a response.",
+      content: assistantMessage,
       timestamp: new Date().toISOString(),
     };
 
