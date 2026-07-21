@@ -1,5 +1,10 @@
 import { Card } from "@/components/ui/card";
 
+interface SocialLoginRowProps {
+  label: string;
+  onGoogleSignIn?: () => Promise<void>;
+}
+
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24">
@@ -30,7 +35,13 @@ function AppleIcon() {
   );
 }
 
-export function SocialLoginRow({ label }: { label: string }) {
+export function SocialLoginRow({ label, onGoogleSignIn }: SocialLoginRowProps) {
+  const providers = [
+    { icon: <GoogleIcon />, label: "Google", onClick: onGoogleSignIn },
+    { icon: <MicrosoftIcon />, label: "Microsoft", onClick: undefined },
+    { icon: <AppleIcon />, label: "Apple", onClick: undefined },
+  ];
+
   return (
     <div className="mt-6">
       <div className="relative">
@@ -42,14 +53,16 @@ export function SocialLoginRow({ label }: { label: string }) {
         </div>
       </div>
       <div className="mt-5 grid grid-cols-3 gap-3">
-        {[
-          { icon: <GoogleIcon />, label: "Google" },
-          { icon: <MicrosoftIcon />, label: "Microsoft" },
-          { icon: <AppleIcon />, label: "Apple" },
-        ].map((p) => (
+        {providers.map((p) => (
           <Card
             key={p.label}
-            className="flex cursor-pointer flex-col items-center gap-2 py-3 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary"
+            className={
+              `flex flex-col items-center gap-2 py-3 text-xs font-medium text-muted-foreground transition-colors ` +
+              (p.onClick ? "cursor-pointer hover:bg-secondary" : "cursor-default")
+            }
+            onClick={p.onClick}
+            role={p.onClick ? "button" : undefined}
+            tabIndex={p.onClick ? 0 : undefined}
           >
             {p.icon}
             {p.label}

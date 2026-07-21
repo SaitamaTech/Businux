@@ -48,6 +48,18 @@ export function LoginForm() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setFormError(null);
+    setSubmitting(true);
+
+    try {
+      await supabaseSignInWithGoogle();
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Google sign-in failed. Please try again.");
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight">Welcome back 👋</h1>
@@ -137,7 +149,7 @@ export function LoginForm() {
         </Button>
       </form>
 
-      <SocialLoginRow label="Or continue with" />
+      <SocialLoginRow label="Or continue with" onGoogleSignIn={handleGoogleSignIn} />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}

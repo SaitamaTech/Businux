@@ -16,6 +16,7 @@ import { authApi } from "@/services/api/auth";
 import { useToast } from "@/components/providers/toast-provider";
 import { env } from "@/lib/env";
 import { firebaseSignup } from "@/lib/firebase";
+import { supabaseSignupWithEmail, supabaseSignInWithGoogle } from "@/lib/supabase";
 
 const schema = z
   .object({
@@ -60,6 +61,18 @@ export function SignupForm() {
   const onSubmit = async (values: FormValues) => {
     try {
       const payload: any = { fullName: values.fullName, email: values.email, password: values.password, seed_demo: values.demo, template: values.template };
+
+      if (env.useSupabase) {
+        try {
+          await supabaseSignupWithEmail(values.email, values.password, values.fullName);
+          toast.success({ title: "Account created", description: "Your account is ready. You can continue to the dashboard." });
+          router.push("/dashboard");
+          return;
+        } catch (supabaseError) {
+          console.warn("Supabase signup failed, falling back to backend signup", supabaseError);
+        }
+      }
+
       if (env.useFirebase) {
         try {
           await firebaseSignup(values.email, values.password, values.fullName);
@@ -70,11 +83,21 @@ export function SignupForm() {
       } else {
         await authApi.signup(payload);
       }
+
       toast.success({ title: "Account created", description: "Your account is ready. You can continue to the dashboard." });
       router.push("/dashboard");
     } catch (err: any) {
       const message = err?.message ?? "Signup failed";
       toast.error({ title: "Signup error", description: message });
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await supabaseSignInWithGoogle();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Google sign-in failed. Please try again.";
+      toast.error({ title: "Google sign-in failed", description: message });
     }
   };
 
@@ -241,7 +264,7 @@ export function SignupForm() {
         </Button>
       </form>
 
-      <SocialLoginRow label="Or sign up with" />
+      <SocialLoginRow label="Or sign up with" onGoogleSignIn={handleGoogleSignIn} />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{" "}

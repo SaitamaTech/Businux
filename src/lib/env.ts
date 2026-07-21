@@ -31,4 +31,8 @@ export const env = {
   isDevelopment: process.env.NODE_ENV === "development",
   /** Use Firebase Auth when true (client + Admin on server). */
   useFirebase: readBool(process.env.NEXT_PUBLIC_USE_FIREBASE, false),
+  /** Use Supabase Auth when true. */
+  useSupabase: readBool(process.env.NEXT_PUBLIC_USE_SUPABASE, false),
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
 } as const;
