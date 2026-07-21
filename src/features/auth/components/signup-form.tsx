@@ -24,6 +24,8 @@ const schema = z
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
     terms: z.boolean().refine((v) => v, { message: "You must agree to continue" }),
+    demo: z.boolean().optional(),
+    template: z.string().optional(),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match",
