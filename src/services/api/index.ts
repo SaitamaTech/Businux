@@ -1,0 +1,14 @@
+export { authApi } from "./auth";
+export { customersApi } from "./customers";
+export { tasksApi } from "./tasks";
+export { dashboardApi } from "./dashboard";
+export { aiAssistantApi } from "./ai-assistant";
+export { apiClient, ApiError } from "./client";
+export { crmApi } from "./crm";
+export { financeApi } from "./finance";
+export { projectsApi } from "./projects";
+export { hrApi } from "./hr";
+export { inventoryApi } from "./inventory";
+export { marketingApi } from "./marketing";
+export { communicationApi } from "./communication";
+export { adminApi } from "./admin";
