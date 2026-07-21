@@ -25,7 +25,7 @@ npm install
 PORT=4000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
-GROK_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
 ```
 
 3. **Start the server**

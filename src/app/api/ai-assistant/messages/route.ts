@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import type { SendChatMessageRequest, SendChatMessageResponse } from "@/types/api";
 
-const GROK_API_KEY = process.env.GROK_API_KEY;
-const XAI_BASE_URL = "https://api.x.ai/v1";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.XAI_API_KEY || process.env.GROK_API_KEY;
+const GEMINI_MODEL = "gemini-1.5-mini";
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1";
 
 export async function POST(request: Request ) {
-  if (!GROK_API_KEY) {
-    return NextResponse.json({ error: "Grok API key is not configured." }, { status: 500 });
+  if (!GEMINI_API_KEY) {
+    return NextResponse.json({ error: "Gemini API key is not configured." }, { status: 500 });
   }
 
   const payload = (await request.json()) as SendChatMessageRequest;
@@ -15,37 +16,33 @@ export async function POST(request: Request ) {
   }
 
   try {
-    const response = await fetch(`${XAI_BASE_URL}/chat/completions`, {
+    const isApiKey = GEMINI_API_KEY.startsWith("AIza");
+    const requestUrl = `${GEMINI_BASE_URL}/models/${GEMINI_MODEL}:generate${isApiKey ? `?key=${encodeURIComponent(GEMINI_API_KEY)}` : ""}`;
+    const requestHeaders: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...(isApiKey ? {} : { Authorization: `Bearer ${GEMINI_API_KEY}` }),
+    };
+
+    const response = await fetch(requestUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${GROK_API_KEY}`,
-      },
+      headers: requestHeaders,
       body: JSON.stringify({
-        model: "grok-3-mini-latest",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are the Businux AI assistant. Answer business questions clearly, provide concise insights, and help users with strategy, reporting, and CRM guidance.",
-          },
-          {
-            role: "user",
-            content: payload.content,
-          },
-        ],
-        max_tokens: 600,
+        prompt: {
+          text: payload.content,
+        },
         temperature: 0.8,
+        maxOutputTokens: 600,
+        candidateCount: 1,
       }),
     });
 
     const result = await response.json();
     if (!response.ok) {
-      const errorMessage = result?.error?.message ?? "Grok request failed.";
+      const errorMessage = result?.error?.message ?? "Gemini request failed.";
       return NextResponse.json({ error: errorMessage }, { status: response.status });
     }
 
-    const assistantMessage = result.choices?.[0]?.message?.content ?? "The AI did not return a response.";
+    const assistantMessage = result?.candidates?.[0]?.output ?? "The AI did not return a response.";
     const aiResponse: SendChatMessageResponse = {
       id: crypto.randomUUID(),
       role: "assistant",
@@ -56,7 +53,7 @@ export async function POST(request: Request ) {
     return NextResponse.json(aiResponse);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unexpected Grok error." },
+      { error: error instanceof Error ? error.message : "Unexpected Gemini error." },
       { status: 500 }
     );
   }
